@@ -1908,6 +1908,10 @@ footer {
   .pred-card:not(.res-card){grid-template-columns:1fr 1fr;gap:4px 8px;}
   .pred-card:not(.res-card)>div:first-child{grid-column:1/-1;}
   .bpf-row2{grid-template-columns:1fr;}
+  .pred-card.res-card{flex-wrap:wrap;gap:6px 8px;}
+  .rc-main{flex:1 1 calc(100% - 50px);min-width:0;}
+  .rc-meta{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding-top:4px;border-top:1px solid var(--border-glow);}
+  .rc-badge{margin-left:auto!important;}
 }
 @media(max-width:900px){.bp-two-col{grid-template-columns:1fr!important;}}
 </style>
@@ -2103,19 +2107,21 @@ var STATIC_TIPS = [{"addedAt":1760648400000,"confidence":3,"date":"2026-10-16","
     var badgeTxt=isWin?'✓ WIN':isLoss?'✗ LOSS':'VOID';
     var scoreHtml=t.result?'<span style="font-size:0.82rem;font-weight:600;color:var(--text-white)">'+t.result+'</span>':'';
     var dp=t.date?(t.date.split('-')):[],dy=dp[2]?parseInt(dp[2]):'',mo=dp[1]?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(dp[1])-1]:'';
-    return'<div class="pred-card res-card '+t.status+'" data-id="'+id+'" style="display:flex;align-items:center;gap:10px;padding:10px 18px">'+
-      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:36px;border-right:1px solid var(--border-glow);padding-right:10px">'+
+    return'<div class="pred-card res-card '+t.status+'" data-id="'+id+'" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:10px 18px">'+
+      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:36px;flex-shrink:0;border-right:1px solid var(--border-glow);padding-right:10px;align-self:center">'+
       '<span style="font-size:1rem;font-weight:500;color:var(--gold);line-height:1">'+dy+'</span>'+
       '<span style="font-size:0.58rem;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">'+mo+'</span>'+
       '</div>'+
-      '<div style="flex:1;min-width:0;overflow:hidden">'+
+      '<div class="rc-main" style="flex:1;min-width:140px;overflow:hidden">'+
       '<span style="font-weight:500;color:var(--text-white);font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">'+( t.match||'').replace(/ vs /gi,' - ')+'</span>'+
       '<span style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">'+(t.league||'Football')+'</span>'+
       '</div>'+
-      '<span style="background:rgba(0,212,255,0.12);color:var(--neon-blue);border:1px solid rgba(0,212,255,0.4);border-radius:4px;padding:2px 8px;font-weight:500;font-size:0.76rem;white-space:nowrap;flex-shrink:0">'+(t.prediction||'')+'</span>'+
-      (scoreHtml?'<span style="font-size:0.82rem;font-weight:600;color:var(--text-white);flex-shrink:0">'+t.result+'</span>':'')+
-      '<span style="font-size:0.82rem;font-weight:600;color:var(--gold);flex-shrink:0;white-space:nowrap">@'+(t.odds||'–')+'</span>'+
-      '<span style="background:'+badgeBg+';color:'+badgeColor+';border:1px solid '+badgeBorder+';border-radius:4px;padding:2px 10px;font-weight:600;font-size:0.74rem;letter-spacing:.04em;white-space:nowrap;flex-shrink:0;margin-left:auto">'+badgeTxt+'</span>'+
+      '<div class="rc-meta" style="display:flex;flex-wrap:wrap;align-items:center;gap:5px;flex-shrink:0">'+
+      '<span style="background:rgba(0,212,255,0.12);color:var(--neon-blue);border:1px solid rgba(0,212,255,0.4);border-radius:4px;padding:2px 8px;font-weight:500;font-size:0.76rem;white-space:nowrap">'+(t.prediction||'')+'</span>'+
+      (t.result?'<span style="font-size:0.82rem;font-weight:600;color:var(--text-white)">'+t.result+'</span>':'')+
+      '<span style="font-size:0.82rem;font-weight:600;color:var(--gold);white-space:nowrap">@'+(t.odds||'–')+'</span>'+
+      '<span class="rc-badge" style="background:'+badgeBg+';color:'+badgeColor+';border:1px solid '+badgeBorder+';border-radius:4px;padding:2px 10px;font-weight:600;font-size:0.74rem;letter-spacing:.04em;white-space:nowrap;margin-left:auto">'+badgeTxt+'</span>'+
+      '</div>'+
       '</div>';
   }
 
