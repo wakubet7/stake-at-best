@@ -1909,6 +1909,7 @@ footer {
   /* result cards: wrap so meta drops below */
   .pred-card.res-card{flex-wrap:wrap;gap:6px 8px;}
   .rc-main{flex:1 1 calc(100% - 50px);min-width:0;}
+  .rc-meta{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding-top:4px;border-top:1px solid var(--border-glow);}
   .rc-badge{margin-left:auto!important;}
   /* hero buttons: center on mobile */
   .hero-cta-row{justify-content:center!important;}
@@ -2119,7 +2120,7 @@ var STATIC_TIPS = [{"addedAt":1760648400000,"confidence":3,"date":"2026-10-16","
       '<div class="rc-meta" style="display:flex;flex-wrap:wrap;align-items:center;gap:5px;flex-shrink:0">'+
       '<span style="background:rgba(0,212,255,0.12);color:var(--neon-blue);border:1px solid rgba(0,212,255,0.4);border-radius:4px;padding:2px 8px;font-weight:500;font-size:0.76rem;white-space:nowrap">'+(t.prediction||'')+'</span>'+
       (t.result?'<span style="font-size:0.82rem;font-weight:600;color:var(--text-white)">'+t.result+'</span>':'')+
-      '<span style="font-size:0.82rem;font-weight:600;color:var(--gold);white-space:nowrap">@'+(t.odds||'\u2013')+'</span>'+
+      '<span style="font-size:0.82rem;font-weight:600;color:var(--gold);white-space:nowrap">@'+(t.odds||'–')+'</span>'+
       '<span class="rc-badge" style="background:'+badgeBg+';color:'+badgeColor+';border:1px solid '+badgeBorder+';border-radius:4px;padding:2px 10px;font-weight:600;font-size:0.74rem;letter-spacing:.04em;white-space:nowrap;margin-left:auto">'+badgeTxt+'</span>'+
       '</div>'+
       '</div>';
