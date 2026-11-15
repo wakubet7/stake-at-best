@@ -1290,7 +1290,7 @@ footer {
     <div>
       <div id="bp-pred-loading" class="bp-load-msg">⏳ Loading predictions…</div>
       <div style="border:1px solid var(--border-glow);border-radius:var(--radius-lg);overflow:hidden">
-        <div class="pred-col-hdr" style="display:grid;grid-template-columns:1fr auto auto;gap:0 14px;padding:10px 18px;background:var(--bg-dark);border-bottom:1px solid var(--border-glow);font-size:0.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:500"><span>Match / League</span><span style="text-align:center">Prediction</span><span style="text-align:right">Odds</span></div>
+        <div class="pred-col-hdr" style="display:grid;grid-template-columns:1fr 120px 90px;gap:0 14px;padding:10px 18px;background:var(--bg-dark);border-bottom:1px solid var(--border-glow);font-size:0.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:500"><span>Match / League</span><span style="text-align:center">Prediction</span><span style="text-align:right">Odds</span></div>
         <div id="bp-pred-grid" class="pred-grid" style="border:none;border-radius:0"></div>
       </div>
       <button id="bp-show-more" hidden style="width:100%;padding:12px;background:rgba(0,212,255,0.08);border:1px solid var(--border-glow);border-top:none;color:var(--neon-blue);font-family:var(--font-head);font-size:0.9rem;font-weight:600;cursor:pointer;letter-spacing:.04em;transition:background 0.2s;" onmouseover="this.style.background='rgba(0,212,255,0.15)'" onmouseout="this.style.background='rgba(0,212,255,0.08)'"></button>
@@ -1341,7 +1341,7 @@ footer {
     <!-- LEFT: results list -->
     <div>
       <div style="border:1px solid var(--border-glow);border-radius:var(--radius-lg);overflow:hidden">
-        <div class="pred-col-hdr" style="display:grid;grid-template-columns:1fr auto auto;gap:0 14px;padding:10px 18px;background:var(--bg-dark);border-bottom:1px solid var(--border-glow);font-size:0.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:500"><span>Match / League</span><span style="text-align:center">Prediction</span><span style="text-align:right">Odds</span></div>
+        <div class="pred-col-hdr pred-col-hdr-result" style="display:grid;grid-template-columns:50px 1fr 120px 90px 72px;gap:0 14px;padding:10px 18px;background:var(--bg-dark);border-bottom:1px solid var(--border-glow);font-size:0.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:500"><span></span><span>Match / League</span><span style="text-align:center">Prediction</span><span style="text-align:right">Score/Odds</span><span style="text-align:center">Result</span></div>
         <div style="max-height:calc(8 * 69px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--neon-blue) transparent"><div id="bp-results-grid" class="pred-grid" style="border:none;border-radius:0"></div></div>
       </div>
       <div id="bp-no-results" class="bp-no-msg" hidden>No settled results yet.</div>
@@ -1902,6 +1902,34 @@ footer {
 .bpm-sub:hover{transform:translateY(-2px);box-shadow:var(--shadow-gold);}
 .bp-no-msg{text-align:center;padding:48px 20px;color:var(--text-muted);font-family:var(--font-head);font-size:1rem;}
 .bp-load-msg{text-align:center;padding:32px;color:var(--neon-blue);font-family:var(--font-head);}
+@media(min-width:581px){
+  /* Prediction cards: 3-col grid so header labels align with card content */
+  .pred-card:not(.res-card){
+    display:grid!important;
+    grid-template-columns:1fr 120px 90px;
+    grid-template-rows:auto auto;
+    gap:2px 14px;
+    align-items:start;
+    flex-direction:unset;
+  }
+  .pred-card:not(.res-card) .pc-league{grid-column:1;grid-row:2;}
+  .pred-card:not(.res-card) .pc-row2{display:contents!important;}
+  .pred-card:not(.res-card) .pc-match{grid-column:1;grid-row:1;min-width:0;}
+  .pred-card:not(.res-card) .pc-pred{grid-column:2;grid-row:1/span 2;align-self:center;text-align:center;width:100%;box-sizing:border-box;}
+  .pred-card:not(.res-card) .pc-odds{grid-column:3;grid-row:1/span 2;align-self:center;margin-left:0!important;justify-content:flex-end!important;}
+  /* Result cards: 5-col grid so header labels align with card content */
+  .pred-card.res-card{
+    display:grid!important;
+    grid-template-columns:50px 1fr 120px 90px 72px;
+    gap:0 14px!important;
+    align-items:center;
+    flex-wrap:unset;
+  }
+  .pred-card.res-card .rc-meta{display:contents!important;}
+  .pred-card.res-card .rc-pred{justify-self:stretch;text-align:center;width:100%;box-sizing:border-box;}
+  .pred-card.res-card .rc-score-odds{display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+  .pred-card.res-card .rc-badge{margin-left:0!important;text-align:center;}
+}
 @media(max-width:580px){
   .pred-card{padding:10px 12px;}
   .pred-col-hdr{display:none!important;}
@@ -2082,16 +2110,29 @@ var STATIC_TIPS = [{"addedAt":1760648400000,"confidence":3,"date":"2026-10-16","
     return h;
   }
 
+  function predLabel(pred,match){
+    if(!pred) return '';
+    var teams=(match||'').split(/ vs /i);
+    var home=(teams[0]||'').trim();
+    var away=(teams[1]||'').trim();
+    var p=pred.trim();
+    if(home && p.toLowerCase().indexOf(home.toLowerCase())!==-1 && /win/i.test(p)) return 'Home Win';
+    if(away && p.toLowerCase().indexOf(away.toLowerCase())!==-1 && /win/i.test(p)) return 'Away Win';
+    if(p==='1') return 'Home Win';
+    if(p==='2') return 'Away Win';
+    return p;
+  }
+
   function mkCard(t){
     var id=t.id;
     var odds=t.odds||'';
     var addBtn=odds?'<button onclick="addToCalc('+odds+')" title="Add to calculator" style="background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.5);color:var(--green-live);border-radius:4px;width:20px;height:20px;font-size:0.9rem;font-weight:600;line-height:1;cursor:pointer;padding:0;flex-shrink:0" onmouseover="this.style.background=\'rgba(0,230,118,0.3)\'" onmouseout="this.style.background=\'rgba(0,230,118,0.15)\'">+</button>':'';
     return'<div class="pred-card '+t.status+'" data-id="'+id+'" style="display:flex;flex-direction:column;gap:4px;padding:10px 18px;align-items:flex-start">'+
-      '<span style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">'+(t.league||'Football')+(t.time?' &nbsp;·&nbsp; '+t.time:'')+'</span>'+
-      '<div style="display:flex;align-items:center;gap:6px;min-width:0;width:100%">'+
-      '<span style="flex:1;min-width:0;font-weight:500;color:var(--text-white);font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left">'+( t.match||'').replace(/ vs /gi,' - ')+'</span>'+
-      '<span style="background:rgba(0,212,255,0.12);color:var(--neon-blue);border:1px solid rgba(0,212,255,0.4);border-radius:4px;padding:2px 8px;font-weight:500;font-size:0.78rem;white-space:nowrap;flex-shrink:0;text-align:center">'+(t.prediction||'')+'</span>'+
-      '<div style="display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:auto">'+
+      '<span class="pc-league" style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">'+(t.league||'Football')+(t.time?' &nbsp;·&nbsp; '+t.time:'')+'</span>'+
+      '<div class="pc-row2" style="display:flex;align-items:center;gap:6px;min-width:0;width:100%">'+
+      '<span class="pc-match" style="flex:1;min-width:0;font-weight:500;color:var(--text-white);font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left">'+( t.match||'').replace(/ vs /gi,' - ')+'</span>'+
+      '<span class="pc-pred" style="background:rgba(0,212,255,0.12);color:var(--neon-blue);border:1px solid rgba(0,212,255,0.4);border-radius:4px;padding:2px 8px;font-weight:500;font-size:0.78rem;white-space:nowrap;flex-shrink:0;text-align:center">'+predLabel(t.prediction,t.match)+'</span>'+
+      '<div class="pc-odds" style="display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:auto">'+
       '<span style="font-size:0.88rem;font-weight:600;color:var(--gold);white-space:nowrap">@'+(odds||'\u2013')+'</span>'+
       addBtn+
       '</div>'+
@@ -2118,9 +2159,11 @@ var STATIC_TIPS = [{"addedAt":1760648400000,"confidence":3,"date":"2026-10-16","
       '<span style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">'+(t.league||'Football')+'</span>'+
       '</div>'+
       '<div class="rc-meta" style="display:flex;flex-wrap:wrap;align-items:center;gap:5px;flex-shrink:0">'+
-      '<span style="background:rgba(0,212,255,0.12);color:var(--neon-blue);border:1px solid rgba(0,212,255,0.4);border-radius:4px;padding:2px 8px;font-weight:500;font-size:0.76rem;white-space:nowrap">'+(t.prediction||'')+'</span>'+
-      (t.result?'<span style="font-size:0.82rem;font-weight:600;color:var(--text-white)">'+t.result+'</span>':'')+
-      '<span style="font-size:0.82rem;font-weight:600;color:var(--gold);white-space:nowrap">@'+(t.odds||'–')+'</span>'+
+      '<span class="rc-pred" style="background:rgba(0,212,255,0.12);color:var(--neon-blue);border:1px solid rgba(0,212,255,0.4);border-radius:4px;padding:2px 8px;font-weight:500;font-size:0.76rem;white-space:nowrap">'+predLabel(t.prediction,t.match)+'</span>'+
+      '<div class="rc-score-odds" style="display:flex;align-items:center;gap:4px">'+
+      (t.result?'<span class="rc-score" style="font-size:0.82rem;font-weight:600;color:var(--text-white)">'+t.result+'</span>':'')+
+      '<span class="rc-odds" style="font-size:0.82rem;font-weight:600;color:var(--gold);white-space:nowrap">@'+(t.odds||'–')+'</span>'+
+      '</div>'+
       '<span class="rc-badge" style="background:'+badgeBg+';color:'+badgeColor+';border:1px solid '+badgeBorder+';border-radius:4px;padding:2px 10px;font-weight:600;font-size:0.74rem;letter-spacing:.04em;white-space:nowrap;margin-left:auto">'+badgeTxt+'</span>'+
       '</div>'+
       '</div>';
@@ -2234,7 +2277,7 @@ var STATIC_TIPS = [{"addedAt":1760648400000,"confidence":3,"date":"2026-10-16","
       '</div>'+
       '<div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px">All October 2026 Results</div>'+
       '<div style="border:1px solid var(--border-glow);border-radius:10px;overflow:hidden">'+
-        '<div style="display:grid;grid-template-columns:1fr auto auto;gap:0 14px;padding:10px 18px;background:var(--bg-dark);border-bottom:1px solid var(--border-glow);font-size:0.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:500"><span>Match / League</span><span style="text-align:center">Prediction</span><span style="text-align:right">Odds</span></div>'+
+        '<div style="display:grid;grid-template-columns:50px 1fr 120px 90px 72px;gap:0 14px;padding:10px 18px;background:var(--bg-dark);border-bottom:1px solid var(--border-glow);font-size:0.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:500"><span></span><span>Match / League</span><span style="text-align:center">Prediction</span><span style="text-align:right">Score/Odds</span><span style="text-align:center">Result</span></div>'+
         '<div class="pred-grid" style="border:none;border-radius:0">'+cards+'</div>'+
       '</div>';
     document.body.style.overflow='hidden';
