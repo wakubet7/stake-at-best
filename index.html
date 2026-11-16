@@ -2120,7 +2120,7 @@ var STATIC_TIPS = [{"addedAt":1760648400000,"confidence":3,"date":"2026-10-16","
     if(away && p.toLowerCase().indexOf(away.toLowerCase())!==-1 && /win/i.test(p)) return 'Away Win';
     if(p==='1') return 'Home Win';
     if(p==='2') return 'Away Win';
-    return p;
+    return p.replace(/\b1x\b/gi,'1X').replace(/\bx2\b/gi,'X2');
   }
 
   function mkCard(t){
