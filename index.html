@@ -1282,7 +1282,7 @@ footer {
   <div class="pred-header reveal">
     <span class="section-tag">Daily Tips</span>
     <h2 class="pred-title" style="margin-top:12px;">Today's Football Predictions</h2>
-    <p id="bp-today-date" style="font-family:var(--font-display);color:var(--gold);font-size:1rem;letter-spacing:0.08em;margin-top:6px;margin-bottom:0;"></p><script>!function(){var d=new Date(),days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],months=['January','February','March','April','May','June','July','August','September','October','November','December'];document.getElementById('bp-today-date').textContent='📅 '+days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();}();</script>
+    <p id="bp-today-date" style="font-family:var(--font-display);color:var(--gold);font-size:1rem;letter-spacing:0.08em;margin-top:6px;margin-bottom:0;"></p>
     <p class="pred-sub">Expert analysis &amp; value bets. Register with promo code <strong style="color:var(--gold)">BPBET</strong> to unlock your 300% welcome bonus.</p>
   </div>
   <div style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start" class="bp-two-col">
@@ -2173,6 +2173,17 @@ var STATIC_TIPS = [{"addedAt":1760648400000,"confidence":3,"date":"2026-10-16","
     tips=data;
     var ld=g('bp-pred-loading');if(ld)ld.hidden=true;
     var pend=data.filter(function(t){return t.status==='pending';}).sort(function(a,b){return(a.time||'').localeCompare(b.time||'');});
+    // Update date header from the most recent pending tip's date
+    var dateEl=g('bp-today-date');
+    if(dateEl){
+      var pendDate=pend.length?pend.reduce(function(a,b){return(b.date||'')>(a.date||'')?b:a;}).date:null;
+      if(pendDate){
+        var dp=pendDate.split('-'),d=new Date(parseInt(dp[0]),parseInt(dp[1])-1,parseInt(dp[2]));
+        var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+        dateEl.textContent='📅 '+days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+      } else { dateEl.textContent=''; }
+    }
     var pg=g('bp-pred-grid'),np=g('bp-no-preds'),sm=g('bp-show-more');
     var visible=pend.slice(0,8);
     if(pg)pg.innerHTML=visible.map(mkCard).join('');
